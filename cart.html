@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Cart- SHOPYVIEE | ONLINE SHOP</title>
+    <title>Cart- SHOPYVIEE | ONLINE SHOP</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Roboto:wght@300&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/fontawesome.min.css">
@@ -20,7 +20,7 @@
                 </div>
                 <nav>
                     <ul id="MenuItems">
-                        <li><a href="index.html">Home</a></li>
+                        <li><a href="website.html">Home</a></li>
                         <li><a href="products.html">Products</a></li>
                         <li><a href="account.html">Account</a></li>
                     </ul>
@@ -39,7 +39,7 @@
         <!--cart items details-->
         <div class="small-container cart page">
 
-            <table>
+            <table id="cartTable">
                 <tr>
                     <th>Product</th>
                     <th>Quantity</th>
@@ -51,73 +51,100 @@
                             <img src="belle cargo.jpg" width="300px" height="350px">
                             <div>
                                 <p>Belle Cargo</p>
-                                <small>Price</small>
+                                <small class="price">GHC 180.00</small>
                                 <br>
-                                <a href="">Remove</a>
+                                <a href="#" class="remove-item" onclick="removeCartItem(event)">Remove</a>
                             </div>
                         </div>
                     </td>
-                    <td><input type="number" value="1"></td>
-                    <td>GHC 180.00</td>
+                    <td><input type="number" value="1" onchange="updateSubtotal(event)"></td>
+                    <td class="subtotal">GHC 180.00</td>
                 </tr>
-                <tr>
-                    <td>
-                        <div class="cart-info">
-                            <img src="black maxi.jpg" width="300px" height="350px">
-                            <div>
-                                <p>Black Maxi</p>
-                                <small>Price</small>
-                                <br>
-                                <a href="">Remove</a>
-                            </div>
-                        </div>
-                    </td>
-                    <td><input type="number" value="1"></td>
-                    <td>GHC 150.00</td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <div class="cart-info">
-                            <img src="halter crop.jpg" width="300px" height="350px">
-                            <div>
-                                <p>Halter crop top</p>
-                                <small>Price</small>
-                                <br>
-                                <a href="">Remove</a>
-                            </div>
-                        </div>
-                    </td>
-                    <td><input type="number" value="1"></td>
-                    <td>GHC 100.00</td>
-                </tr>
+               
             </table>
 
             <div class="total-price">
                 <table>
                     <tr>
                         <td>Subtotal</td>
-                        <td>GHC 420.00</td>
+                        <td id="subtotalValue">GHC 180.00</td>
                     </tr>
-                    <td>Charges</td>
-                    <td>GHC 4.20</td>
+                    <tr>
+                        <td>Charges</td>
+                        <td>GHC 4.20</td>
                     </tr>
-                    <td>Total</td>
-                    <td>GHC 422.20</td>
+                    <tr>
+                        <td>Total</td>
+                        <td id="totalValue">GHC 184.20</td>
                     </tr>
                 </table>
             </div>
 
+            <!-- Shop More Button -->
+            <button onclick="window.location.href='products.html'">Shop More</button>
+
         </div>
 
+        <!-- JavaScript for removing items from the cart and updating subtotal -->
+        <script>
+            function removeCartItem(event) {
+                event.preventDefault(); // Prevents the default behavior of the link
+                // Remove the whole row when "Remove" link is clicked
+                event.target.closest('tr').remove();
+                updateCartTotal();
+            }
 
-        <!---------footer-->
+            function updateSubtotal(event) {
+                const quantity = parseInt(event.target.value);
+                const price = parseFloat(event.target.closest('tr').querySelector('.price').innerText.replace('GHC ', ''));
+                const subtotalElement = event.target.closest('tr').querySelector('.subtotal');
+                subtotalElement.innerText = 'GHC ' + (quantity * price).toFixed(2);
+                updateCartTotal();
+            }
+
+            function updateCartTotal() {
+                let subtotal = 0;
+                document.querySelectorAll('.subtotal').forEach(subtotalElement => {
+                    subtotal += parseFloat(subtotalElement.innerText.replace('GHC ', ''));
+                });
+                const subtotalElement = document.getElementById('subtotalValue');
+                subtotalElement.innerText = 'GHC ' + subtotal.toFixed(2);
+
+                const total = subtotal + 4.20; // Assuming charges are fixed
+                const totalElement = document.getElementById('totalValue');
+                totalElement.innerText = 'GHC ' + total.toFixed(2);
+            }
+            
+        function addToCart(productName, price) {
+            const table = document.getElementById('cartTable');
+            const newRow = table.insertRow(-1);
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+            cell1.innerHTML = `
+                <div class="cart-info">
+                    <img src="pants.jpg" width="300px" height="350px">
+                    <div>
+                        <p>${productName}</p>
+                        <small class="price">GHC ${price.toFixed(2)}</small>
+                        <br>
+                        <a href="#" class="remove-item" onclick="removeCartItem(event)">Remove</a>
+                    </div>
+                </div>`;
+            cell2.innerHTML = '<input type="number" value="1" onchange="updateSubtotal(event)">';
+            cell3.textContent = `GHC ${price.toFixed(2)}`;
+            updateCartTotal();
+        }
+    
+        </script>
+
+        <!-- Footer -->
         <div class="footer">
             <div class="container">
                 <div class="row">
                     <div class="footer-col-1">
-                        <h3> Having Issues?</h3>
-                        <p> Talk to a customer service<br> representative via call or text on 050915039 </p>
+                        <h3>Having Issues?</h3>
+                        <p>Talk to a customer service<br> representative via call or text on 050915039</p>
                     </div>
                     <div class="footer-col-2">
                         <img src="sy-logo.png">
@@ -143,9 +170,10 @@
                     </div>
                 </div>
                 <hr>
-                <p class="copyright">Copyright 2023 - Yviee </p>
+                <p class="copyright">Copyright 2023 - Yviee</p>
             </div>
         </div>
+    </div>
 </body>
 
 </html>
